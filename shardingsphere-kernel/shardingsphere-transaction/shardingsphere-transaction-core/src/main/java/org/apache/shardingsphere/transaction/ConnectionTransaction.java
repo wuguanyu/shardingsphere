@@ -58,16 +58,16 @@ public final class ConnectionTransaction {
     
     /**
      * Whether in transaction.
-     * 
+     *
      * @return in transaction or not
      */
     public boolean isInTransaction() {
-        return null != transactionManager && transactionManager.isInTransaction();
+        return (isLocalTransaction()) || (null != transactionManager && transactionManager.isInTransaction());
     }
     
     /**
      * Judge is local transaction or not.
-     * 
+     *
      * @return is local transaction or not
      */
     public boolean isLocalTransaction() {
@@ -86,13 +86,13 @@ public final class ConnectionTransaction {
     
     /**
      * Get connection in transaction.
-     * 
+     *
      * @param dataSourceName data source name
      * @return connection in transaction
      * @throws SQLException SQL exception
      */
     public Optional<Connection> getConnection(final String dataSourceName) throws SQLException {
-        return isInTransaction() ? Optional.of(transactionManager.getConnection(dataSourceName)) : Optional.empty();
+        return isInTransaction() ? (transactionManager != null ? Optional.of(transactionManager.getConnection(dataSourceName)) : Optional.empty()) : Optional.empty();
     }
     
     /**
@@ -118,7 +118,7 @@ public final class ConnectionTransaction {
     
     /**
      * Get distributed transaction operation type.
-     * 
+     *
      * @param autoCommit is auto commit
      * @return distributed transaction operation type
      */
